@@ -9,7 +9,7 @@ from snorkel.labeling.model import LabelModel, MajorityLabelVoter
 @labeling_function()
 def positive_labeling_function(text):
     positive_signals = ["good", "wonderful", "amazing"]
-    data = text["review"].split(" ")
+    data = text["data"].split(" ")
     for positive_signal in positive_signals:
         if positive_signal in data:
             return 1
@@ -20,7 +20,7 @@ def positive_labeling_function(text):
 @labeling_function()
 def positive1_labeling_function(text):
     positive_signals1 = ["excellent", "great"]
-    data = text["review"].split(" ")
+    data = text["data"].split(" ")
     for positive_signal1 in positive_signals1:
         if positive_signal1 in data:
             return 1
@@ -30,7 +30,7 @@ def positive1_labeling_function(text):
 @labeling_function()
 def negative_labeling_function(text):
     negative_signals = ["bad", "horrible", "sucks"]
-    data = text["review"].split(" ")
+    data = text["data"].split(" ")
     for negative_signal in negative_signals:
         if negative_signal in data:
             return 0
@@ -41,7 +41,7 @@ def negative_labeling_function(text):
 @labeling_function()
 def negative1_labeling_function(text):
     negative_signals1 = ["awful", "terrible"]
-    data = text["review"].split(" ")
+    data = text["data"].split(" ")
     for negative_signal1 in negative_signals1:
         if negative_signal1 in data:
             return 0
