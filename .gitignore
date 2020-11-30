@@ -1,0 +1,18 @@
+# IDE
+.vscode/
+.idea/
+
+# Data
+data/
+datasets/
+
+# Evaluation
+out/
+evaluation/
+
+# Python
+__pycache__/
+venv/
+
+# scratch
+scratch/
