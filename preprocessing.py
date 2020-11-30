@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.utils import check_random_state
 from sklearn.preprocessing import scale, MinMaxScaler
+from sklearn.datasets import load_files
 import numpy as np
 
 
@@ -60,36 +61,62 @@ def remove_stopwords(text):
     return filtered_text
 
 
-def pre_processing_imdb(csv_file):
-    dataset = pd.read_csv(csv_file)
-    for i in range(len(dataset)):
-        if dataset["sentiment"][i] == "positive":
-            dataset["sentiment"][i] = 1
-        else:
-            dataset["sentiment"][i] = 0
-
-    dataset["review"] = dataset["review"].apply(preprocess_text)
-    dataset["review"] = dataset["review"].apply(remove_special_characters)
-    dataset["review"] = dataset["review"].apply(remove_stopwords)
-    return dataset
-    # labels = dataset["sentiment"].values
-    # tfidfvectorizer = TfidfVectorizer()
-    # features = tfidfvectorizer.fit_transform(dataset["review"])
-    # return features, labels
+def fetch_and_preprocess(dataset):
+    if dataset == "IMDB":
+        return _pre_processing_imdb()
+    else:
+        raise ValueError(f"The value '{dataset}' for argument `dataset`"
+                          " is not recognised.")
 
 
-# def split_data(features, labels):
-#     x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=12)
-#     return x_train, x_test, y_train, y_test
+def _pre_processing_imdb():
+    train = load_files("./datasets/imdb/train", 
+                       categories=["neg", "pos", "unsup"], encoding='utf-8', 
+                       random_state=123)
+    test = load_files("./datasets/imdb/test", categories=["neg", "pos"], 
+                      encoding='utf-8', random_state=123)
+    
+    train_df = pd.DataFrame({
+        'data': train.data,
+        'target': train.target
+    })
+
+    test_df = pd.DataFrame({
+        'data': test.data,
+        'target': test.target
+    })
+
+    unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
+    train_df = train_df[train_df.target != 2].reset_index(drop=True)
+
+    unlab_df = unlab_df['data']
+
+    # Initial hand labelled sample is 2000. 
+    # This is denoted in num_labeled_samples in main.py
+    train_gold_df = train_df.groupby('target').sample(n=1000, random_state=123).sample(frac=1).reset_index(drop=True)
+
+    # corpus = train_gold_df['data'].append(unlab_df, ignore_index=True)
+    # NOTE (Abhirav) Using strip_html is giving an error in the vectorizer 
+    # corpus = corpus.apply(strip_html)
+
+    # X_corpus = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1,2))
+    
+    return train_gold_df, unlab_df, test_df
+
 
 def split_data(dataframe):
     df_train, df_test = train_test_split(dataframe, test_size=0.2, random_state=12)
     return df_train, df_test
 
 
-def tfidf_tokenizer(dataframe):
-    tfidf = TfidfVectorizer()
-    features = tfidf.fit_transform(dataframe["review"])
+vectorizer = None
+
+def tfidf_vectorizer(data, **kwargs):
+    global vectorizer
+    if vectorizer == None:
+        # print("1")
+        vectorizer = TfidfVectorizer(**kwargs)
+    features = vectorizer.fit_transform(data)
     return features
 
 
