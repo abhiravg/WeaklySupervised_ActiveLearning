@@ -62,18 +62,20 @@ def remove_stopwords(text):
 
 
 def fetch_and_preprocess(dataset):
+    
     if dataset == "IMDB":
         return _pre_processing_imdb()
+    
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
                           " is not recognised.")
 
 
 def _pre_processing_imdb():
-    train = load_files("./datasets/imdb/train", 
+    train = load_files("./imdb/train",
                        categories=["neg", "pos", "unsup"], encoding='utf-8', 
                        random_state=123)
-    test = load_files("./datasets/imdb/test", categories=["neg", "pos"], 
+    test = load_files("./imdb/test", categories=["neg", "pos"],
                       encoding='utf-8', random_state=123)
     
     train_df = pd.DataFrame({
@@ -93,7 +95,7 @@ def _pre_processing_imdb():
 
     # Initial hand labelled sample is 2000. 
     # This is denoted in num_labeled_samples in main.py
-    train_gold_df = train_df.groupby('target').sample(n=1000, random_state=123).sample(frac=1).reset_index(drop=True)
+    train_gold_df = train_df.groupby('target').sample(n=5000, random_state=123).sample(frac=1).reset_index(drop=True)
 
     # corpus = train_gold_df['data'].append(unlab_df, ignore_index=True)
     # NOTE (Abhirav) Using strip_html is giving an error in the vectorizer 
@@ -104,12 +106,58 @@ def _pre_processing_imdb():
     return train_gold_df, unlab_df, test_df
 
 
+def fetch_and_preprocess_snorkel(training_file, testing_file):
+    train = load_files(training_file,
+                       categories=["neg", "pos", "unsup"], encoding='utf-8',
+                       random_state=123)
+    test = load_files(testing_file, categories=["neg", "pos"],
+                      encoding='utf-8', random_state=123)
+
+    train_df = pd.DataFrame({
+        'data': train.data,
+        'target': train.target
+    })
+
+    test_df = pd.DataFrame({
+        'data': test.data,
+        'target': test.target
+    })
+
+    unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
+    train_df = train_df[train_df.target != 2].reset_index(drop=True)
+    unlab_df = unlab_df['data']
+    
+    return unlab_df, train_df, test_df
+
+
+def fetch_and_preprocess_supervised(training_file, testing_file):
+    train = load_files(training_file,
+                       categories=["neg", "pos", "unsup"], encoding='utf-8',
+                       random_state=123)
+    test = load_files(testing_file, categories=["neg", "pos"],
+                      encoding='utf-8', random_state=123)
+
+    train_df = pd.DataFrame({
+        'data': train.data,
+        'target': train.target
+    })
+
+    test_df = pd.DataFrame({
+        'data': test.data,
+        'target': test.target
+    })
+    
+    train_df = train_df[train_df['target'] != 2].reset_index(drop=True)
+    return train_df, test_df
+
+
 def split_data(dataframe):
     df_train, df_test = train_test_split(dataframe, test_size=0.2, random_state=12)
     return df_train, df_test
 
 
 vectorizer = None
+
 
 def tfidf_vectorizer(data, **kwargs):
     global vectorizer
