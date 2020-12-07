@@ -85,7 +85,7 @@ def weak_supervisor(dataframe, model_type):
     pandasApplier = PandasLFApplier(lfs=labeling_functions)
     label_training_matrix = pandasApplier.apply(df=dataframe)
 
-    if model_type == "label_model":
+    if model_type == "Label_Model":
         # constructing a probabilistic label model
         label_model = LabelModel(cardinality=2, verbose=True)
         label_model.fit(L_train=label_training_matrix, n_epochs=300, log_freq=50, seed=123)

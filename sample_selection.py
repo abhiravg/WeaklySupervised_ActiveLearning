@@ -2,6 +2,17 @@ from sklearn.utils import check_random_state
 import numpy as np
 
 
+def sampling_method(label_prob_values, num_labeled_samples, sampling_method):
+    if sampling_method == "Random_Sampling":
+        samples = random_sampling(label_prob_values, num_labeled_samples)
+    elif sampling_method == "Margin_Sampling":
+        samples = margin_selection_sampling(label_prob_values, num_labeled_samples)
+    else:
+        samples = entropy_selection_sampling(label_prob_values, num_labeled_samples)
+    
+    return samples
+        
+        
 def random_sampling(label_prob_values, num_labeled_samples):
     random_state = check_random_state(0)
     validation_size = label_prob_values.shape[0]

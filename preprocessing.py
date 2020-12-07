@@ -61,17 +61,17 @@ def remove_stopwords(text):
     return filtered_text
 
 
-def fetch_and_preprocess(dataset):
+def fetch_and_preprocess(dataset, initial_labeled_examples):
     
     if dataset == "IMDB":
-        return _pre_processing_imdb()
+        return _pre_processing_imdb(initial_labeled_examples)
     
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
                           " is not recognised.")
 
 
-def _pre_processing_imdb():
+def _pre_processing_imdb(initial_labeled_examples):
     train = load_files("./imdb/train",
                        categories=["neg", "pos", "unsup"], encoding='utf-8', 
                        random_state=123)
@@ -95,7 +95,9 @@ def _pre_processing_imdb():
 
     # Initial hand labelled sample is 2000. 
     # This is denoted in num_labeled_samples in main.py
-    train_gold_df = train_df.groupby('target').sample(n=5000, random_state=123).sample(frac=1).reset_index(drop=True)
+    num_samples = int(initial_labeled_examples / 2)
+    print("num_samples: ", num_samples)
+    train_gold_df = train_df.groupby('target').sample(n=num_samples, random_state=123).sample(frac=1).reset_index(drop=True)
 
     # corpus = train_gold_df['data'].append(unlab_df, ignore_index=True)
     # NOTE (Abhirav) Using strip_html is giving an error in the vectorizer 
@@ -103,7 +105,7 @@ def _pre_processing_imdb():
 
     # X_corpus = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1,2))
     
-    return train_gold_df, unlab_df, test_df
+    return train_gold_df, train_df, unlab_df, test_df
 
 
 def fetch_and_preprocess_snorkel(training_file, testing_file):
