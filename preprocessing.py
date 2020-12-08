@@ -26,7 +26,7 @@ def process_stopwords():
 
 def strip_html(text):
     soup = BeautifulSoup(text, "html.parser")
-    return soup
+    return soup.get_text()
 
 
 def remove_between_square_brackets(text):
@@ -61,21 +61,21 @@ def remove_stopwords(text):
     return filtered_text
 
 
-def fetch_and_preprocess(dataset, initial_labeled_examples):
+def fetch_and_preprocess(dataset, initial_labeled_examples, dataset_home):
     
     if dataset == "IMDB":
-        return _pre_processing_imdb(initial_labeled_examples)
+        return _pre_processing_imdb(initial_labeled_examples, dataset_home)
     
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
                           " is not recognised.")
 
 
-def _pre_processing_imdb(initial_labeled_examples):
-    train = load_files("./imdb/train",
+def _pre_processing_imdb(initial_labeled_examples, dataset_home):
+    train = load_files(f"{dataset_home}/train",
                        categories=["neg", "pos", "unsup"], encoding='utf-8', 
                        random_state=123)
-    test = load_files("./imdb/test", categories=["neg", "pos"],
+    test = load_files(f"{dataset_home}/test", categories=["neg", "pos"],
                       encoding='utf-8', random_state=123)
     
     train_df = pd.DataFrame({
@@ -88,6 +88,9 @@ def _pre_processing_imdb(initial_labeled_examples):
         'target': test.target
     })
 
+    train_df['data'] = train_df['data'].apply(strip_html)
+    test_df['data'] = test_df['data'].apply(strip_html)
+
     unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
     train_df = train_df[train_df.target != 2].reset_index(drop=True)
 
@@ -98,12 +101,6 @@ def _pre_processing_imdb(initial_labeled_examples):
     num_samples = int(initial_labeled_examples / 2)
     print("num_samples: ", num_samples)
     train_gold_df = train_df.groupby('target').sample(n=num_samples, random_state=123).sample(frac=1).reset_index(drop=True)
-
-    # corpus = train_gold_df['data'].append(unlab_df, ignore_index=True)
-    # NOTE (Abhirav) Using strip_html is giving an error in the vectorizer 
-    # corpus = corpus.apply(strip_html)
-
-    # X_corpus = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1,2))
     
     return train_gold_df, train_df, unlab_df, test_df
 
@@ -134,7 +131,7 @@ def fetch_and_preprocess_snorkel(training_file, testing_file):
 
 def fetch_and_preprocess_supervised(training_file, testing_file):
     train = load_files(training_file,
-                       categories=["neg", "pos", "unsup"], encoding='utf-8',
+                       categories=["neg", "pos"], encoding='utf-8',
                        random_state=123)
     test = load_files(testing_file, categories=["neg", "pos"],
                       encoding='utf-8', random_state=123)
@@ -149,7 +146,8 @@ def fetch_and_preprocess_supervised(training_file, testing_file):
         'target': test.target
     })
     
-    train_df = train_df[train_df['target'] != 2].reset_index(drop=True)
+    train_df['data'] = train_df['data'].apply(strip_html)
+    test_df['data'] = test_df['data'].apply(strip_html)
     return train_df, test_df
 
 

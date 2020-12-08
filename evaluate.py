@@ -8,11 +8,11 @@ from scipy.sparse import vstack
 
 
 def active_weakly_supervised_learning(initial_labeled_examples, max_queries, learning_model, sample_select,
-                                      label_method, dataset):
+                                      label_method, dataset, dataset_home):
     active_learning_benchmarks = {}
 
     # read and preprocess data
-    train_gold_df, train_df, unlab_df, test_df = fetch_and_preprocess(dataset, initial_labeled_examples)
+    train_gold_df, train_df, unlab_df, test_df = fetch_and_preprocess(dataset, initial_labeled_examples, dataset_home)
 
     # initial hand labeled samples
     print("train_gold_df: ", train_gold_df.shape)
@@ -26,17 +26,18 @@ def active_weakly_supervised_learning(initial_labeled_examples, max_queries, lea
     # print(validation_df.head(20))
 
     # construct word embeddings
-    corpus = train_gold_df['data'].append(validation_df['data'], ignore_index=True)
-    X_corpus = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1, 2), max_features=5000)
+    corpus = train_gold_df['data'].append([validation_df['data'], test_df['data']], ignore_index=True)
+    X_corpus = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1, 2))
 
     X_train = X_corpus[:initial_labeled_examples]
     Y_train = train_gold_df["target"].values
 
-    X_test = tfidf_vectorizer(test_df["data"], max_df=0.4, ngram_range=(1, 2), max_features=5000)
+    test_start = train_gold_df.shape[0] + validation_df.shape[0]
+    X_test = X_corpus[test_start:]
     Y_test = test_df["target"].values
 
     # construct word embeddings for validation set
-    X_val = X_corpus[initial_labeled_examples:]
+    X_val = X_corpus[initial_labeled_examples:test_start]
     # Y_true_val = validation_df["sentiment"].values
     Y_weak_val = validation_df["weak_labels"].values
 
@@ -48,10 +49,6 @@ def active_weakly_supervised_learning(initial_labeled_examples, max_queries, lea
     print("Y_train shape: ", Y_train.shape)
     print("Y_weak_val shape: ", Y_weak_val.shape)
     print("Y_test shape: ", Y_test.shape)
-
-    ####TESTED TILL HERE####
-
-    # TODO Test remaining. Code already in place.
 
     # Building training model
     classifier, Y_test_predicted = active_learning_train(X_train, Y_train, X_test, learning_model)
