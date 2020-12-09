@@ -122,6 +122,9 @@ def fetch_and_preprocess_snorkel(training_file, testing_file):
         'target': test.target
     })
 
+    train_df['data'] = train_df['data'].apply(strip_html)
+    test_df['data'] = test_df['data'].apply(strip_html)
+
     unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
     train_df = train_df[train_df.target != 2].reset_index(drop=True)
     unlab_df = unlab_df['data']

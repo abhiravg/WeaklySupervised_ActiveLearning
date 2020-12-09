@@ -10,12 +10,15 @@ def weak_supervision(training_file, testing_file, label_generation_model, learni
     print("test_df shape: ", test_df.shape)
 
     # generating weak labels for the unlabeled data
-    validation_df = weak_supervisor(pd.DataFrame(train_df), label_generation_model)
+    validation_df = weak_supervisor(pd.DataFrame(unlabeled_df), label_generation_model)
+
+    corpus = validation_df['data'].append(test_df['data'], ignore_index=True)
+    tfidf = tfidf_vectorizer(corpus, max_df=0.4, ngram_range=(1, 2))
 
     # construct train and test sets
-    X_train = tfidf_vectorizer(validation_df['data'], max_df=0.4, ngram_range=(1, 2), max_features=15000)
+    X_train = tfidf[:validation_df.shape[0]]
     Y_train = validation_df['weak_labels'].values
-    X_test = tfidf_vectorizer(test_df['data'], max_df=0.4, ngram_range=(1, 2), max_features=15000)
+    X_test = tfidf[validation_df.shape[0]:]
     Y_test = test_df['target'].values
 
     # Training

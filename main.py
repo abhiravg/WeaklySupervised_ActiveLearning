@@ -19,7 +19,7 @@ max_num_queries = int(sys.argv[2])
 dataset = str(sys.argv[3])
 dataset_home = str(sys.argv[5])
 
-# learning_type: supervised, weak supervision, active_weak_learning, active_learning
+# learning_type: supervised, weak_supervision, active_weak_learning, active_learning
 learning_type = str(sys.argv[4])
 
 
@@ -27,15 +27,17 @@ if max_num_queries < num_initial_labeled_samples:
     print("ERROR: initial labeled examples(arg 1) cannot be greater than max_num_queries (arg 2)")
 
 # machine learning models
-# learning_models = ["Naive_Bayes", "Logistic_Regression"]#, "Random_Forest"]
+learning_models = ["Naive_Bayes", "Logistic_Regression"]#, "Random_Forest"]
 # learning_models = ["Naive_Bayes"]
-learning_models = ["Logistic_Regression"]
+# learning_models = ["Logistic_Regression"]
 
 # sample selection methods
 sample_selection_methods = ["Random_Sampling", "Margin_Sampling", "Entropy_Sampling"]
 
+
 # weak label generation models
-weak_label_generation_models = ["Label_Model", "Majority_Voter"]
+# weak_label_generation_models = ["Label_Model", "Majority_Voter"]
+weak_label_generation_models = ["Label_Model"]
 
 if learning_type == "supervised":
     supervised_learning_benchmark = {}
@@ -53,9 +55,10 @@ elif learning_type == "weak_supervision":
         weak_supervision_benchmark[learning_model] = {}
         for weak_label_generation_model in weak_label_generation_models:
             weak_supervision_benchmark[learning_model][weak_label_generation_model] = \
-                weak_supervision("./imdb/train", "./imdb/test", weak_label_generation_model, learning_model)
+                weak_supervision(f"{dataset_home}/train", f"{dataset_home}/test", weak_label_generation_model, learning_model)
     
-    pprint.pprint("weak_supervision_benchmark: ", weak_supervision_benchmark)
+    with open('result_ws.out', 'w') as f:
+        pprint.pprint(weak_supervision_benchmark, f)
 
 else:
     active_learning_benchmarks = {}
