@@ -8,7 +8,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.utils import check_random_state
 from sklearn.preprocessing import scale, MinMaxScaler
 from sklearn.datasets import load_files
-import numpy as np
 
 
 # read and process stopwords
@@ -61,56 +60,22 @@ def remove_stopwords(text):
     return filtered_text
 
 
-def fetch_and_preprocess(dataset, initial_labeled_examples, dataset_home):
-    
+def fetch_and_preprocess_data(dataset, dataset_home, unlab=False):
+    # unlab is whether to return unlabelled data
     if dataset == "IMDB":
-        return _pre_processing_imdb(initial_labeled_examples, dataset_home)
-    
+        return _pre_processing_imdb(dataset_home, unlab)
+
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
-                          " is not recognised.")
+                         " is not recognised.")
 
 
-def _pre_processing_imdb(initial_labeled_examples, dataset_home):
+def _pre_processing_imdb(dataset_home, unlab):
     train = load_files(f"{dataset_home}/train",
-                       categories=["neg", "pos", "unsup"], encoding='utf-8', 
+                       categories=["neg", "pos", "unsup"], encoding='utf-8',
                        random_state=123)
     test = load_files(f"{dataset_home}/test", categories=["neg", "pos"],
                       encoding='utf-8', random_state=123)
-    
-    train_df = pd.DataFrame({
-        'data': train.data,
-        'target': train.target
-    })
-
-    test_df = pd.DataFrame({
-        'data': test.data,
-        'target': test.target
-    })
-
-    train_df['data'] = train_df['data'].apply(strip_html)
-    test_df['data'] = test_df['data'].apply(strip_html)
-
-    unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
-    train_df = train_df[train_df.target != 2].reset_index(drop=True)
-
-    unlab_df = unlab_df['data']
-
-    # Initial hand labelled sample is 2000. 
-    # This is denoted in num_labeled_samples in main.py
-    num_samples = int(initial_labeled_examples / 2)
-    print("num_samples: ", num_samples)
-    train_gold_df = train_df.groupby('target').sample(n=num_samples, random_state=123).sample(frac=1).reset_index(drop=True)
-    
-    return train_gold_df, train_df, unlab_df, test_df
-
-
-def fetch_and_preprocess_snorkel(training_file, testing_file):
-    train = load_files(training_file,
-                       categories=["neg", "pos", "unsup"], encoding='utf-8',
-                       random_state=123)
-    test = load_files(testing_file, categories=["neg", "pos"],
-                      encoding='utf-8', random_state=123)
 
     train_df = pd.DataFrame({
         'data': train.data,
@@ -127,40 +92,53 @@ def fetch_and_preprocess_snorkel(training_file, testing_file):
 
     unlab_df = train_df[train_df.target == 2].reset_index(drop=True)
     train_df = train_df[train_df.target != 2].reset_index(drop=True)
-    unlab_df = unlab_df['data']
-    
-    return unlab_df, train_df, test_df
+
+    unlab_df = pd.DataFrame(unlab_df['data'])
+
+    if unlab:
+        return train_df, test_df, unlab_df
+    else:
+        return train_df, test_df
 
 
-def fetch_and_preprocess_supervised(training_file, testing_file):
-    train = load_files(training_file,
-                       categories=["neg", "pos"], encoding='utf-8',
-                       random_state=123)
-    test = load_files(testing_file, categories=["neg", "pos"],
-                      encoding='utf-8', random_state=123)
-
-    train_df = pd.DataFrame({
-        'data': train.data,
-        'target': train.target
-    })
-
-    test_df = pd.DataFrame({
-        'data': test.data,
-        'target': test.target
-    })
-    
-    train_df['data'] = train_df['data'].apply(strip_html)
-    test_df['data'] = test_df['data'].apply(strip_html)
-    return train_df, test_df
-
-
-def split_data(dataframe):
-    df_train, df_test = train_test_split(dataframe, test_size=0.2, random_state=12)
+def _split_data(dataframe):
+    df_train, df_test = train_test_split(dataframe, test_size=0.2, random_state=123)
     return df_train, df_test
 
 
-vectorizer = None
+def split_data(train_df, test_df, unlab_df=None, method="supervised"):
+    if method == "supervised":
+        frames = [train_df, test_df]
+        corpus = pd.concat(frames, ignore_index=True)
+        train_df, test_df = _split_data(corpus)
+        frames = [train_df, test_df]
+        boundary = train_df.shape[0]
+        Y_train = train_df['target'].values
+    elif method == "weak_supervision":
+        frames = [unlab_df, test_df]
+        boundary = unlab_df.shape[0]
+        Y_train = unlab_df['target'].values
+    else:
+        frames = [train_df, test_df]
+        corpus = pd.concat(frames, ignore_index=True)
+        train_df, test_df = _split_data(corpus)
+        return train_df, test_df
 
+    # print("train_df shape: ", train_df.shape)
+    # print("test_df shape: ", test_df.shape)
+
+    corpus = pd.concat(frames, ignore_index=True)
+    tfidf = tfidf_vectorizer(corpus['data'], max_df=0.4, ngram_range=(1, 2))
+
+    X_train = tfidf[:boundary]
+    
+    X_test = tfidf[boundary:]
+    Y_test = test_df['target'].values
+
+    return X_train, Y_train, X_test, Y_test
+
+
+vectorizer = None
 
 def tfidf_vectorizer(data, **kwargs):
     global vectorizer
@@ -172,10 +150,10 @@ def tfidf_vectorizer(data, **kwargs):
 
 
 def get_k_random_labeled_samples(dataframe, num_labeled_samples):
-
     # generating random seed
     random_state = check_random_state(0)
-    df_train = dataframe.sample(num_labeled_samples, replace=False, random_state=random_state)
+    df_train = dataframe.sample(
+        num_labeled_samples, replace=False, random_state=random_state)
     random_samples = df_train.index.values.tolist()
     return random_samples, df_train
 

@@ -1,80 +1,42 @@
-import sys
-from evaluate import active_weakly_supervised_learning
-from supervised_learning import supervised_learn
-from snorkel_weakSupervision import weak_supervision
-import pandas as pd
-import pprint
+#!/usr/bin/env python
 
-if len(sys.argv) < 6:
-    print("ERROR: Missing command line arguments")
-    sys.exit(1)
+from pprint import pprint
 
-# initial labeled samples
-num_initial_labeled_samples = int(sys.argv[1])
+from driver import evaluate
 
-# maximum number of queries
-max_num_queries = int(sys.argv[2])
+import argparse
 
-# dataset
-dataset = str(sys.argv[3])
-dataset_home = str(sys.argv[5])
+parser = argparse.ArgumentParser(
+    description="Active Learning with Weak Supervision - Sentiment Analysis")
 
-# learning_type: supervised, weak_supervision, active_weak_learning, active_learning
-learning_type = str(sys.argv[4])
+parser.add_argument("--num_labeled_samples", type=int, default=2000,
+                help="number of initial labeled samples for Active Learning")
+parser.add_argument("--max_queries", type=int, default=20000,
+                help="maximum number of queries for Active Learning")
+parser.add_argument("--dataset", type=str, default="IMDB",
+                choices=["IMDB", "YELP", "SST-2", "TREC"],
+                help="the dataset to run the algorithm on")
+parser.add_argument("--dataset_home", type=str, required=True,
+                help="the dir where dataset resides")
+parser.add_argument("--scenario", type=str, default="active_weak_learning",
+                choices=["supervised", "weak_supervision", "active_learning",
+                "active_weak_learning"], help="the learning algorithm")
+parser.add_argument("--learner", type=str, default="LR", choices=["LR", "NB", "SVC", "SGD"],
+                help="the learning algorithm")
+parser.add_argument("--sample_method", type=str, default="Margin_Sampling",
+                choices=["Margin_Sampling", "Entropy_Sampling", "Random_Sampling"],
+                help="the sampling method for Active Learning")
+parser.add_argument("--label_gen_model", type=str, default="Label_Model",
+                choices=["Label_Model", "Majority_Voter"],
+                help="weak supervision label generation model")
 
+args = parser.parse_args()
 
-if max_num_queries < num_initial_labeled_samples:
-    print("ERROR: initial labeled examples(arg 1) cannot be greater than max_num_queries (arg 2)")
+if args.max_queries < args.num_labeled_samples:
+    raise ValueError("ERROR: Initial labeled samples cannot be greater than max queries.")
 
-# machine learning models
-learning_models = ["Naive_Bayes", "Logistic_Regression"]#, "Random_Forest"]
-# learning_models = ["Naive_Bayes"]
-# learning_models = ["Logistic_Regression"]
+print(args)
+results = evaluate(args)
 
-# sample selection methods
-sample_selection_methods = ["Random_Sampling", "Margin_Sampling", "Entropy_Sampling"]
-
-
-# weak label generation models
-# weak_label_generation_models = ["Label_Model", "Majority_Voter"]
-weak_label_generation_models = ["Label_Model"]
-
-if learning_type == "supervised":
-    supervised_learning_benchmark = {}
-    print("Evaluating supervised learning...")
-    for learning_model in learning_models:
-        print("Learning Model: ", learning_model)
-        supervised_learning_benchmark[learning_model] = supervised_learn(
-            f"{dataset_home}/train", f"{dataset_home}/test", learning_model)
-    
-    pprint.pprint(supervised_learning_benchmark, width=1)
-
-elif learning_type == "weak_supervision":
-    weak_supervision_benchmark = {}
-    for learning_model in learning_models:
-        weak_supervision_benchmark[learning_model] = {}
-        for weak_label_generation_model in weak_label_generation_models:
-            weak_supervision_benchmark[learning_model][weak_label_generation_model] = \
-                weak_supervision(f"{dataset_home}/train", f"{dataset_home}/test", weak_label_generation_model, learning_model)
-    
-    with open('result_ws.out', 'w') as f:
-        pprint.pprint(weak_supervision_benchmark, f)
-
-else:
-    active_learning_benchmarks = {}
-    print("Evaluating Active Learning...")
-    for learning_model in learning_models:
-        active_learning_benchmarks[learning_model] = {}
-        print("Learning Model: ", learning_model)
-        for sample_selection_method in sample_selection_methods:
-            active_learning_benchmarks[learning_model][sample_selection_method] = {}
-            print("sample selection method: ", sample_selection_method)
-            for weak_label_generation_model in weak_label_generation_models:
-                print("label_generation_model: ", weak_label_generation_model)
-                active_learning_benchmarks[learning_model][sample_selection_method][weak_label_generation_model] = \
-                    active_weakly_supervised_learning(num_initial_labeled_samples, max_num_queries, learning_model,
-                                                      sample_selection_method, weak_label_generation_model, dataset, dataset_home)
-                
-    print("Active learning benchmarks......")
-    with open('result.out', 'w') as f:
-        pprint.pprint(active_learning_benchmarks, f)
+# Graphing or any other visualizations
+pprint(results)

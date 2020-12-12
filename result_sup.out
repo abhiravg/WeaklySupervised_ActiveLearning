@@ -1,0 +1,135 @@
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='NB', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='supervised')
+Scenario: Supervised learning
+Model: Naive Bayes
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.8896499999999999
+Iteration:  1
+Test accuracy:  0.8874
+{'0': {'f1-score': 0.8903602726387536,
+       'precision': 0.8618284637134779,
+       'recall': 0.9208459214501511,
+       'support': 4965},
+ '1': {'f1-score': 0.8842754367934222,
+       'precision': 0.91629392971246,
+       'recall': 0.8544190665342601,
+       'support': 5035},
+ 'accuracy': 0.8874,
+ 'macro avg': {'f1-score': 0.8873178547160879,
+               'precision': 0.8890611967129689,
+               'recall': 0.8876324939922056,
+               'support': 10000},
+ 'weighted avg': {'f1-score': 0.8872965577906292,
+                  'precision': 0.8892518258439653,
+                  'recall': 0.8874,
+                  'support': 10000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='LR', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='supervised')
+Scenario: Supervised learning
+Model: Logistic Regression
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.90025
+Iteration:  1
+Test accuracy:  0.8997
+{'0': {'f1-score': 0.8981415659591754,
+       'precision': 0.9057763211798443,
+       'recall': 0.8906344410876132,
+       'support': 4965},
+ '1': {'f1-score': 0.9012114645917463,
+       'precision': 0.8939038686987104,
+       'recall': 0.9086395233366436,
+       'support': 5035},
+ 'accuracy': 0.8997,
+ 'macro avg': {'f1-score': 0.8996765152754609,
+               'precision': 0.8998400949392773,
+               'recall': 0.8996369822121284,
+               'support': 10000},
+ 'weighted avg': {'f1-score': 0.8996872599206749,
+                  'precision': 0.8997985413555935,
+                  'recall': 0.8997,
+                  'support': 10000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='SVC', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='supervised')
+Scenario: Supervised learning
+Model: Linear SVC
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.9161499999999998
+Iteration:  1
+Test accuracy:  0.9165
+{'0': {'f1-score': 0.9156821165303444,
+       'precision': 0.9181855002025111,
+       'recall': 0.9131923464249748,
+       'support': 4965},
+ '1': {'f1-score': 0.9173021689610775,
+       'precision': 0.9148557882259977,
+       'recall': 0.9197616683217478,
+       'support': 5035},
+ 'accuracy': 0.9165,
+ 'macro avg': {'f1-score': 0.9164921427457109,
+               'precision': 0.9165206442142544,
+               'recall': 0.9164770073733612,
+               'support': 10000},
+ 'weighted avg': {'f1-score': 0.9164978129292184,
+                  'precision': 0.9165089902223365,
+                  'recall': 0.9165,
+                  'support': 10000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='SGD', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='supervised')
+Scenario: Supervised learning
+Model: Linear SGD
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.9036249999999999
+Iteration:  1
+Test accuracy:  0.903
+{'0': {'f1-score': 0.9006961506961506,
+       'precision': 0.9158859046429315,
+       'recall': 0.8860020140986908,
+       'support': 4965},
+ '1': {'f1-score': 0.905199374511337,
+       'precision': 0.8910910140465653,
+       'recall': 0.9197616683217478,
+       'support': 5035},
+ 'accuracy': 0.903,
+ 'macro avg': {'f1-score': 0.9029477626037439,
+               'precision': 0.9034884593447484,
+               'recall': 0.9028818412102193,
+               'support': 10000},
+ 'weighted avg': {'f1-score': 0.9029635238870969,
+                  'precision': 0.9034016772276611,
+                  'recall': 0.903,
+                  'support': 10000}}

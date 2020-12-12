@@ -86,31 +86,33 @@ def weak_supervisor(dataframe, model_type):
     label_training_matrix = pandasApplier.apply(df=dataframe)
 
     if model_type == "Label_Model":
+        print("Weak Supervision Model: Label_Model")
         # constructing a probabilistic label model
         label_model = LabelModel(cardinality=2, verbose=True)
         label_model.fit(L_train=label_training_matrix, n_epochs=300, log_freq=50, seed=123)
         dataframe["weak_labels"] = label_model.predict(L=label_training_matrix)
-        print("dataframe shape: ", dataframe.shape)
+        # print("dataframe shape: ", dataframe.shape)
         dataframe = dataframe[dataframe["weak_labels"] != -1]
         # verify_weak_signals(dataframe)
-        print("dataframe shape after filtering: ", dataframe.shape)
+        # print("dataframe shape after filtering: ", dataframe.shape)
         return dataframe
 
     else:
+        print("Weak Supervision Model: Majority_Voter")
         majorityLabelVoter = MajorityLabelVoter()
         prob = majorityLabelVoter.predict_proba(label_training_matrix)
-        print("predict_prob: ", prob[0:20, :])
+        # print("predict_prob: ", prob[0:20, :])
         dataframe["weak_labels"] = majorityLabelVoter.predict(L=label_training_matrix)
-        print("df weak labels: ", dataframe[0:20]['weak_labels'])
-        print("dataframe shape: ", dataframe.shape)
+        # print("df weak labels: ", dataframe[0:20]['weak_labels'])
+        # print("dataframe shape: ", dataframe.shape)
         dataframe = dataframe[dataframe["weak_labels"] != -1]
         # verify_weak_signals(dataframe)
-        print("dataframe shape after filtering: ", dataframe.shape)
+        # print("dataframe shape after filtering: ", dataframe.shape)
         return dataframe
 
 
 def verify_weak_signals(dataframe):
     accuracy = np.mean((dataframe['target'].ravel() == dataframe['weak_labels'].ravel()))*100
-    print("weak signals accuracy: ", accuracy)
+    print("Weak signals accuracy: ", accuracy)
 
 

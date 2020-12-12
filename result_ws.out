@@ -1,34 +1,143 @@
-{'Logistic_Regression': {'Label_Model': {'0': {'f1-score': 0.7731520029604959,
-                                               'precision': 0.9165387146304014,
-                                               'recall': 0.66856,
-                                               'support': 12500},
-                                         '1': {'f1-score': 0.8272144316820521,
-                                               'precision': 0.7391386475255005,
-                                               'recall': 0.93912,
-                                               'support': 12500},
-                                         'accuracy': 0.80384,
-                                         'macro avg': {'f1-score': 0.800183217321274,
-                                                       'precision': 0.827838681077951,
-                                                       'recall': 0.80384,
-                                                       'support': 25000},
-                                         'weighted avg': {'f1-score': 0.800183217321274,
-                                                          'precision': 0.827838681077951,
-                                                          'recall': 0.80384,
-                                                          'support': 25000}}},
- 'Naive_Bayes': {'Label_Model': {'0': {'f1-score': 0.010504536049657807,
-                                       'precision': 1.0,
-                                       'recall': 0.00528,
-                                       'support': 12500},
-                                 '1': {'f1-score': 0.667842068707592,
-                                       'precision': 0.5013234940242239,
-                                       'recall': 1.0,
-                                       'support': 12500},
-                                 'accuracy': 0.50264,
-                                 'macro avg': {'f1-score': 0.3391733023786249,
-                                               'precision': 0.750661747012112,
-                                               'recall': 0.50264,
-                                               'support': 25000},
-                                 'weighted avg': {'f1-score': 0.33917330237862486,
-                                                  'precision': 0.7506617470121119,
-                                                  'recall': 0.50264,
-                                                  'support': 25000}}}}
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='NB', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='weak_supervision')
+Scenario: Weak Supervision
+Weak Supervision Model: Label_Model
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 50000/50000 [02:31<00:00, 329.53it/s]
+Model: Naive Bayes
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.63966216319301
+Iteration:  1
+Test accuracy:  0.50264
+{'0': {'f1-score': 0.010504536049657807,
+       'precision': 1.0,
+       'recall': 0.00528,
+       'support': 12500},
+ '1': {'f1-score': 0.667842068707592,
+       'precision': 0.5013234940242239,
+       'recall': 1.0,
+       'support': 12500},
+ 'accuracy': 0.50264,
+ 'macro avg': {'f1-score': 0.3391733023786249,
+               'precision': 0.750661747012112,
+               'recall': 0.50264,
+               'support': 25000},
+ 'weighted avg': {'f1-score': 0.33917330237862486,
+                  'precision': 0.7506617470121119,
+                  'recall': 0.50264,
+                  'support': 25000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='LR', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='weak_supervision')
+Scenario: Weak Supervision
+Weak Supervision Model: Label_Model
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 50000/50000 [02:31<00:00, 330.06it/s]
+Model: Logistic Regression
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.8784807589504332
+Iteration:  1
+Test accuracy:  0.80392
+{'0': {'f1-score': 0.7732654949121183,
+       'precision': 0.9165570175438597,
+       'recall': 0.66872,
+       'support': 12500},
+ '1': {'f1-score': 0.8272727272727273,
+       'precision': 0.7392317380352644,
+       'recall': 0.93912,
+       'support': 12500},
+ 'accuracy': 0.80392,
+ 'macro avg': {'f1-score': 0.8002691110924227,
+               'precision': 0.827894377789562,
+               'recall': 0.80392,
+               'support': 25000},
+ 'weighted avg': {'f1-score': 0.8002691110924227,
+                  'precision': 0.827894377789562,
+                  'recall': 0.80392,
+                  'support': 25000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='SVC', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='weak_supervision')
+Scenario: Weak Supervision
+Weak Supervision Model: Label_Model
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 50000/50000 [04:12<00:00, 198.33it/s]
+Model: Linear SVC
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.8985777806230077
+Iteration:  1
+Test accuracy:  0.7746
+{'0': {'f1-score': 0.7314492684554162,
+       'precision': 0.9046327950017683,
+       'recall': 0.61392,
+       'support': 12500},
+ '1': {'f1-score': 0.8058034945032223,
+       'precision': 0.7078161893806382,
+       'recall': 0.93528,
+       'support': 12500},
+ 'accuracy': 0.7746,
+ 'macro avg': {'f1-score': 0.7686263814793193,
+               'precision': 0.8062244921912032,
+               'recall': 0.7746,
+               'support': 25000},
+ 'weighted avg': {'f1-score': 0.7686263814793193,
+                  'precision': 0.8062244921912032,
+                  'recall': 0.7746,
+                  'support': 25000}}
+**********************************************************************
+Namespace(dataset='IMDB', dataset_home='./datasets/imdb', label_gen_model='Label_Model', learner='SGD', max_queries=20000, num_labeled_samples=2000, sample_method='Margin_Sampling', scenario='weak_supervision')
+Scenario: Weak Supervision
+Weak Supervision Model: Label_Model
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 50000/50000 [04:01<00:00, 207.20it/s]
+Model: Linear SGD
+Training Iteration:  1
+Training Iteration:  2
+Training Iteration:  3
+Training Iteration:  4
+Training Iteration:  5
+Training Iteration:  6
+Training Iteration:  7
+Training Iteration:  8
+Training Iteration:  9
+Training Iteration:  10
+Cross validation training accuracy:  0.8722730291855765
+Iteration:  1
+Test accuracy:  0.80944
+{'0': {'f1-score': 0.780359612724758,
+       'precision': 0.920892274211099,
+       'recall': 0.67704,
+       'support': 12500},
+ '1': {'f1-score': 0.83172024019781,
+       'precision': 0.7446552814674257,
+       'recall': 0.94184,
+       'support': 12500},
+ 'accuracy': 0.80944,
+ 'macro avg': {'f1-score': 0.806039926461284,
+               'precision': 0.8327737778392623,
+               'recall': 0.8094399999999999,
+               'support': 25000},
+ 'weighted avg': {'f1-score': 0.8060399264612841,
+                  'precision': 0.8327737778392623,
+                  'recall': 0.80944,
+                  'support': 25000}}
