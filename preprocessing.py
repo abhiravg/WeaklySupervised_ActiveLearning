@@ -64,10 +64,36 @@ def fetch_and_preprocess_data(dataset, dataset_home, unlab=False):
     # unlab is whether to return unlabelled data
     if dataset == "IMDB":
         return _pre_processing_imdb(dataset_home, unlab)
-
+    elif dataset == "AMZ":
+        return _pre_processing_amz(dataset_home)
+    elif dataset == "YELP":
+        return _pre_processing_yelp(dataset_home)
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
                          " is not recognised.")
+
+
+def _pre_processing_amz(dataset_home):
+    train = pd.read_csv(f"{dataset_home}/train.csv", names=["target", "title", "data"])
+    test = pd.read_csv(f"{dataset_home}/test.csv", names=["target", "title", "data"])
+
+    train = train.drop(columns=['title'])
+    test = test.drop(columns=['title'])
+
+    train_df = train.groupby('target').sample(n=20000, random_state=123).sample(frac=1).reset_index(drop=True)
+    test_df = test.groupby('target').sample(n=5000, random_state=123).sample(frac=1).reset_index(drop=True)
+
+    return train_df, test_df
+
+
+def _pre_processing_yelp(dataset_home):
+    train = pd.read_csv(f"{dataset_home}/train.csv", names=["target", "data"])
+    test = pd.read_csv(f"{dataset_home}/test.csv", names=["target", "data"])
+
+    train_df = train.groupby('target').sample(n=50000, random_state=123).sample(frac=1).reset_index(drop=True)
+    test_df = test.groupby('target').sample(n=10000, random_state=123).sample(frac=1).reset_index(drop=True)
+
+    return train_df, test_df
 
 
 def _pre_processing_imdb(dataset_home, unlab):

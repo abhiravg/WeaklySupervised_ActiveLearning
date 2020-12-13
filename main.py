@@ -14,7 +14,7 @@ parser.add_argument("--num_labeled_samples", type=int, default=2000,
 parser.add_argument("--max_queries", type=int, default=20000,
                 help="maximum number of queries for Active Learning")
 parser.add_argument("--dataset", type=str, default="IMDB",
-                choices=["IMDB", "YELP", "SST-2", "TREC"],
+                choices=["IMDB", "YELP", "SST-2", "AMZ"],
                 help="the dataset to run the algorithm on")
 parser.add_argument("--dataset_home", type=str, required=True,
                 help="the dir where dataset resides")
