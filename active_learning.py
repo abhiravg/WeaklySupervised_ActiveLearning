@@ -60,7 +60,7 @@ def active_learner(initial_labeled_examples, max_queries, learning_model, sample
 
     # Building training model
     classifier, Y_test_predicted = train(X_train, Y_train, X_test, learning_model, scenario="active")
-    if learning_model in ["SVC", "SGD"] :
+    if learning_model in ["SVC", "SGD"]:
         calibrator = CalibratedClassifierCV(classifier, cv="prefit")
         calibrator.fit(X_train, Y_train)
     # printing accuracy of the model on the test set
@@ -105,6 +105,9 @@ def active_learner(initial_labeled_examples, max_queries, learning_model, sample
         #     classifier, Y_test_predicted = train(X_train, Y_train, X_test, learning_model)
         # else:
         classifier, Y_test_predicted = train(X_train, Y_train, X_test, learning_model, scenario="active")
+        if learning_model in ["SVC", "SGD"]:
+            calibrator = CalibratedClassifierCV(classifier, cv="prefit")
+            calibrator.fit(X_train, Y_train)
 
         active_learning_benchmarks[active_iteration] = get_test_accuracy(active_iteration, Y_test, Y_test_predicted)
 
