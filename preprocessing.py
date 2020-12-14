@@ -86,14 +86,21 @@ def _pre_processing_amz(dataset_home):
     return train_df, test_df
 
 
-def _pre_processing_yelp(dataset_home):
+def _pre_processing_yelp(dataset_home, unlab):
     train = pd.read_csv(f"{dataset_home}/train.csv", names=["target", "data"])
     test = pd.read_csv(f"{dataset_home}/test.csv", names=["target", "data"])
 
-    train_df = train.groupby('target').sample(n=50000, random_state=123).sample(frac=1).reset_index(drop=True)
+    train_df = train.groupby('target').sample(n=50000, random_state=123).sample(frac=1)
+    train_df_index = train_df.index
+    train_df = train_df.reset_index(drop=True)
     test_df = test.groupby('target').sample(n=10000, random_state=123).sample(frac=1).reset_index(drop=True)
 
-    return train_df, test_df
+    if unlab:
+        train = train.drop(index=train_df_index)
+        unlab_df = train.groupby('target').sample(n=50000, random_state=123).sample(frac=1).reset_index(drop=True)
+        return train_df, test_df, unlab_df
+    else:
+        return train_df, test_df
 
 
 def _pre_processing_imdb(dataset_home, unlab):
