@@ -65,7 +65,7 @@ def fetch_and_preprocess_data(dataset, dataset_home, unlab=False):
     if dataset == "IMDB":
         return _pre_processing_imdb(dataset_home, unlab)
     elif dataset == "AMZ":
-        return _pre_processing_amz(dataset_home)
+        return _pre_processing_amz(dataset_home, unlab)
     elif dataset == "YELP":
         return _pre_processing_yelp(dataset_home, unlab)
     else:
@@ -73,15 +73,35 @@ def fetch_and_preprocess_data(dataset, dataset_home, unlab=False):
                          " is not recognised.")
 
 
-def _pre_processing_amz(dataset_home):
+def _pre_processing_amz(dataset_home, unlab):
     train = pd.read_csv(f"{dataset_home}/train.csv", names=["target", "title", "data"])
     test = pd.read_csv(f"{dataset_home}/test.csv", names=["target", "title", "data"])
 
     train = train.drop(columns=['title'])
     test = test.drop(columns=['title'])
 
-    train_df = train.groupby('target').sample(n=20000, random_state=123).sample(frac=1).reset_index(drop=True)
-    test_df = test.groupby('target').sample(n=5000, random_state=123).sample(frac=1).reset_index(drop=True)
+    # NEUTRAL = 0, NEG = 1, POS = 2
+    train.loc[(train.target == 2),'target'] = 1
+    train.loc[(train.target == 4),'target'] = 2
+    train.loc[(train.target == 5),'target'] = 2
+    train.loc[(train.target == 3),'target'] = 0
+
+    test.loc[(test.target == 2),'target'] = 1
+    test.loc[(test.target == 4),'target'] = 2
+    test.loc[(test.target == 5),'target'] = 2
+    test.loc[(test.target == 3),'target'] = 0
+
+    train_df = train.groupby('target').sample(n=40000, random_state=123).sample(frac=1)
+    train_df_index = train_df.index
+    train_df = train_df.reset_index(drop=True)
+    test_df = test.groupby('target').sample(n=10000, random_state=123).sample(frac=1).reset_index(drop=True)
+
+    if unlab:
+        train = train.drop(index=train_df_index)
+        unlab_df = train.groupby('target').sample(n=50000, random_state=123).sample(frac=1).reset_index(drop=True)
+        return train_df, test_df, unlab_df
+    else:
+        return train_df, test_df
 
     return train_df, test_df
 
