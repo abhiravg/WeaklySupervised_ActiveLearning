@@ -67,7 +67,7 @@ def fetch_and_preprocess_data(dataset, dataset_home, unlab=False):
     elif dataset == "AMZ":
         return _pre_processing_amz(dataset_home)
     elif dataset == "YELP":
-        return _pre_processing_yelp(dataset_home)
+        return _pre_processing_yelp(dataset_home, unlab)
     else:
         raise ValueError(f"The value '{dataset}' for argument `dataset`"
                          " is not recognised.")
