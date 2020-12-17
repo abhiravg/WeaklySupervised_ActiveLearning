@@ -1,0 +1,44 @@
+12/15/2020 08:54:48 AM n_iter_: 5
+12/15/2020 08:54:48 AM n_layers_: 3
+12/15/2020 08:54:48 AM loss_: 0.017384675574259194
+12/15/2020 08:54:49 AM Mean test accuracy: 0.6848
+
+12/15/2020 08:57:59 AM n_iter_: 12
+12/15/2020 08:57:59 AM n_layers_: 3
+12/15/2020 08:57:59 AM loss_: 0.014100798542043316
+12/15/2020 08:57:59 AM Mean test accuracy: 0.6815
+
+12/15/2020 09:16:28 AM Application amz started with PID 12368
+12/15/2020 10:04:15 AM n_iter_: 12
+12/15/2020 10:04:15 AM n_layers_: 3
+12/15/2020 10:04:15 AM loss_: 0.011043843656394681
+12/15/2020 10:04:15 AM Mean test accuracy: 0.6855333333333333
+12/15/2020 10:04:16 AM Application amz with PID 12368 completed
+
+12/15/2020 11:49:42 AM Application amz started with PID 27486
+12/15/2020 12:35:51 PM n_iter_: 12
+12/15/2020 12:35:51 PM n_layers_: 3
+12/15/2020 12:35:51 PM loss_: 0.012141466649672918
+12/15/2020 12:35:51 PM Mean test accuracy: 0.6343666666666666
+12/15/2020 12:35:52 PM Application amz with PID 27486 completed
+
+12/15/2020 02:14:22 PM Application amz started with PID 9628
+12/15/2020 03:11:41 PM n_iter_: 15
+12/15/2020 03:11:41 PM n_layers_: 3
+12/15/2020 03:11:41 PM loss_: 0.2589718749637133
+12/15/2020 03:11:41 PM Mean test accuracy: 0.6377333333333334
+12/15/2020 03:11:41 PM Application amz with PID 9628 completed
+
+12/15/2020 03:29:33 PM Application amz started with PID 16986
+12/15/2020 04:55:44 PM n_iter_: 15
+12/15/2020 04:55:44 PM n_layers_: 3
+12/15/2020 04:55:44 PM loss_: 0.2848280045562372
+12/15/2020 04:55:44 PM Mean test accuracy: 0.6450666666666667
+12/15/2020 04:55:44 PM Application amz with PID 16986 completed
+
+12/15/2020 09:36:22 PM Application amz started with PID 19698
+12/15/2020 11:02:03 PM n_iter_: 15
+12/15/2020 11:02:03 PM n_layers_: 3
+12/15/2020 11:02:03 PM loss_: 0.2856469515250839
+12/15/2020 11:02:03 PM Mean test accuracy: 0.6448
+12/15/2020 11:02:04 PM Application amz with PID 19698 completed
